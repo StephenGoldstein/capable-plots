@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "capable-plots"
+version = "0.1.0"
+description = "Capable Labs house style for matplotlib/seaborn figures, plus shared assay curve math."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Capable Labs" }]
+keywords = ["matplotlib", "plotting", "house-style", "dose-response", "4PL"]
+dependencies = [
+    "matplotlib>=3.7",
+    "numpy>=1.24",
+    "scipy>=1.10",
+]
+
+[project.optional-dependencies]
+seaborn = ["seaborn>=0.13"]
+dev = ["pytest>=7", "ruff>=0.4"]
+
+[project.urls]
+Homepage = "https://github.com/Capable-Labs/capable-plots"
+Source = "https://github.com/Capable-Labs/capable-plots"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
