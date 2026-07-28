@@ -4,8 +4,8 @@ Quick start::
 
     import capable_plots as cap
 
-    with cap.nature:                                   # or cap.house
-        fig, ax = plt.subplots(figsize=cap.figsize("nature-1col"))
+    with cap.house:
+        fig, ax = plt.subplots(figsize=cap.figsize("house-slide"))
         ax.plot(...)                                   # your normal matplotlib
         cap.style_axis(ax)
     cap.save(fig, "figure1")                           # 300dpi png + editable svg
@@ -26,7 +26,7 @@ from .color import (
     colors,
 )
 from .io import save
-from .style import FIGSIZES, Theme, active, figsize, house, nature, theme
+from .style import FIGSIZES, Theme, active, figsize, house
 
 __version__ = "0.1.0"
 
@@ -47,8 +47,6 @@ __all__ = [
     "colors",
     "figsize",
     "house",
-    "nature",
     "save",
     "style_axis",
-    "theme",
 ]

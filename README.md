@@ -21,22 +21,23 @@ pip install -e '.[seaborn]' # if you use group_box
 import matplotlib.pyplot as plt
 import capable_plots as cap
 
-with cap.nature:                                    # or cap.house
-    fig, ax = plt.subplots(figsize=cap.figsize("nature-1col"))
+with cap.house:
+    fig, ax = plt.subplots(figsize=cap.figsize("house-slide"))
     ax.plot(x, y, color=cap.CAPABLE)
     cap.style_axis(ax)                              # spine/tick cleanup
 cap.save(fig, "figure1")                            # 300dpi PNG + editable SVG
 ```
 
-## Themes
+## Theme
 
-| Theme        | Look                                          | Source style guide         |
-|--------------|-----------------------------------------------|----------------------------|
-| `cap.house`  | pitch-deck: serif, transparent bg, thick lines | Capable house style        |
-| `cap.nature` | Nature Portfolio: Arial, white bg, thin lines  | Nature initial-submission  |
+| Theme       | Look                                           | Source style guide  |
+|-------------|------------------------------------------------|---------------------|
+| `cap.house` | pitch-deck: serif, transparent bg, thick lines | Capable house style |
 
-Use as a context manager (`with cap.nature:`), globally (`cap.nature.apply()`),
-or just pull sizes/colors (`cap.figsize(...)`, `cap.colors(...)`, `cap.CAPABLE`).
+One theme by design — simplicity first; more can be added later as additional
+`Theme` instances. Use as a context manager (`with cap.house:`), globally
+(`cap.house.apply()`), or just pull sizes/colors (`cap.figsize(...)`,
+`cap.colors(...)`, `cap.CAPABLE`).
 
 ## Assay curve math
 

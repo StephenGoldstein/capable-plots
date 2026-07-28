@@ -1,7 +1,7 @@
 """Saving conventions — one call, the right outputs every time.
 
 Always writes a 300 dpi raster and an editable vector, with transparency defaulting
-to whatever the active theme wants (``house`` transparent, ``nature`` on white).
+to what the active theme wants (``house`` → transparent background).
 """
 from __future__ import annotations
 
