@@ -58,6 +58,26 @@ def test_hill_bounds_respected():
     assert 0.6 <= fit.Hill <= 2.5
 
 
+def test_bound_overrides_are_respected():
+    x = _doses()
+    y = curves.four_pl(x, 1.0, 0.1, np.log10(50.0), 1.0)
+    # Force EC50 into a narrow window well away from the true 50 nM and confirm the
+    # fitter honors the override (the fit is worse, but the constraint holds).
+    fit = curves.fit_4pl(
+        x, y, direction="descending", ns_mean=1.0,
+        logEC50_bounds=(np.log10(200.0), np.log10(400.0)),
+    )
+    assert 200.0 <= fit.EC50_nM <= 400.0
+
+
+def test_defaults_unchanged_by_override_support():
+    # Same synthetic curve as the recovery test still recovers 50 nM with no overrides.
+    x = _doses()
+    y = curves.four_pl(x, 1.0, 0.1, np.log10(50.0), 1.0)
+    fit = curves.fit_4pl(x, y, direction="descending", ns_mean=1.0)
+    assert fit.EC50_nM == pytest.approx(50.0, rel=0.05)
+
+
 def test_bad_direction_rejected():
     x = _doses()
     y = curves.four_pl(x, 1.0, 0.1, np.log10(50.0), 1.0)

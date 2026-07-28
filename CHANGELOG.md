@@ -15,3 +15,6 @@ Initial release.
 - `assay` domain pack: canonical `four_pl` + bounded multi-start `fit_4pl` with
   an explicit `direction=` argument, `FitResult`, and the `dose_response` /
   `group_box` figure helpers.
+- `fit_4pl` accepts optional per-parameter bound overrides (`bottom_bounds`,
+  `top_bounds`, `logEC50_bounds`) alongside `hill_bounds`, so a single fitter can be
+  tuned per assay modality instead of forking the function. Defaults unchanged.

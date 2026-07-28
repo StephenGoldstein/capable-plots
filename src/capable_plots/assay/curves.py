@@ -55,6 +55,9 @@ def fit_4pl(
     ns_mean: float | None = None,
     ref_top: float | None = None,
     hill_bounds: tuple[float, float] = (0.6, 2.5),
+    bottom_bounds: tuple[float, float] | None = None,
+    top_bounds: tuple[float, float] | None = None,
+    logEC50_bounds: tuple[float, float] | None = None,
     n_starts: int = 6,
     flat_frac: float = 0.10,
 ) -> FitResult:
@@ -72,6 +75,12 @@ def fit_4pl(
         reported relative to it; otherwise it is ``None``.
     hill_bounds : (float, float)
         Physical bounds on the Hill slope, clamped to prevent non-physical fits.
+    bottom_bounds, top_bounds, logEC50_bounds : (float, float), optional
+        Override the fit bounds for the low-dose asymptote, high-dose asymptote, and
+        log10(EC50) respectively. Each defaults to a generous window around the observed
+        data range. These overrides are what let a single fitter serve every assay
+        modality — each caller passes the bounds its assay needs rather than forking the
+        function. (logEC50 is in log10 nM.)
     flat_frac : float
         If the fitted response amplitude ``|top - bottom|`` is below this fraction of
         the baseline signal level (``ns_mean``, or the data median when ``ns_mean`` is
@@ -95,18 +104,26 @@ def fit_4pl(
     lo_log, hi_log = logx.min() - 1.0, logx.max() + 1.0
     min_hill, max_hill = hill_bounds
 
-    # Asymptote bounds are generous around the observed range; direction sets guesses.
+    # Bounds default to a generous window around the observed range, but each may be
+    # overridden per assay — this is what lets one fitter serve every modality.
     pad = 0.5 * span if span > 0 else 1.0
-    lo = [ymin - pad, ymin - pad, lo_log, min_hill]
-    hi = [ymax + pad, ymax + pad, hi_log, max_hill]
+    b_lo, b_hi = bottom_bounds if bottom_bounds is not None else (ymin - pad, ymax + pad)
+    t_lo, t_hi = top_bounds if top_bounds is not None else (ymin - pad, ymax + pad)
+    e_lo, e_hi = logEC50_bounds if logEC50_bounds is not None else (lo_log, hi_log)
+    lo = [b_lo, t_lo, e_lo, min_hill]
+    hi = [b_hi, t_hi, e_hi, max_hill]
 
     if direction == "descending":
         bottom0, top0 = ymax, ymin   # high at low dose, low at high dose
     else:
         bottom0, top0 = ymin, ymax   # low at low dose, high at high dose
+    # Keep initial guesses inside whatever bounds are in effect.
+    bottom0 = min(max(bottom0, b_lo), b_hi)
+    top0 = min(max(top0, t_lo), t_hi)
 
     best = None
-    for logec0 in np.linspace(lo_log + 1.0, hi_log - 1.0, n_starts):
+    sweep_lo, sweep_hi = max(e_lo, logx.min()), min(e_hi, logx.max())
+    for logec0 in np.linspace(sweep_lo, sweep_hi, n_starts):
         p0 = [bottom0, top0, logec0, 1.0]
         try:
             popt, pcov = curve_fit(four_pl, x, y, p0=p0, bounds=(lo, hi), maxfev=20000)
@@ -138,8 +155,8 @@ def fit_4pl(
     return FitResult(
         EC50_nM=ec50,
         pEC50=-np.log10(ec50 * 1e-9),
-        EC50_lo=10 ** max(logEC50 - 1.96 * perr[2], lo_log),
-        EC50_hi=10 ** min(logEC50 + 1.96 * perr[2], hi_log),
+        EC50_lo=10 ** max(logEC50 - 1.96 * perr[2], e_lo),
+        EC50_hi=10 ** min(logEC50 + 1.96 * perr[2], e_hi),
         Hill=hill,
         top=top,
         bottom=bottom,
