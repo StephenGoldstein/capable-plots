@@ -9,7 +9,16 @@ Usable three ways::
         ...
     fig, ax = plt.subplots(figsize=cap.figsize("house-slide"))
 
-A single theme by design — simplicity first. More styles (e.g. a journal theme)
+``house`` is the default, but you can derive a tweaked theme without mutating it::
+
+    light = cap.house.customize(background="white", font="Helvetica", font_size=10)
+    with light:
+        ...
+
+See :meth:`Theme.customize` for the full set of knobs (background, font, size, line
+weight, palette) plus a raw-rcParams escape hatch.
+
+A single named theme by design — simplicity first. More styles (e.g. a journal theme)
 can be added later as additional ``Theme`` instances without touching callers.
 Fonts degrade to DejaVu when the preferred family is unavailable, so figures never
 fail to render.
@@ -50,6 +59,80 @@ class Theme:
         mpl.rcParams.update(self._saved)
         _active = self._prev_active
         return False
+
+    def customize(
+        self,
+        *,
+        name: str | None = None,
+        background: str | None = None,
+        font: str | list[str] | None = None,
+        font_size: float | None = None,
+        line_width: float | None = None,
+        palette=None,
+        rc: dict | None = None,
+    ) -> Theme:
+        """Return a NEW theme derived from this one; the original is left untouched.
+
+        All knobs are optional — omit one to inherit this theme's value:
+
+        background
+            ``"transparent"`` / ``"none"`` → transparent background; any color
+            (``"white"``, ``"#fff"``, …) → opaque with that facecolor.
+        font
+            A family name or a fallback list (``"Helvetica"`` or
+            ``["Inter", "Arial"]``); ``"DejaVu Sans"`` is appended as a safety net so
+            text always renders.
+        font_size
+            Base font size in points.
+        line_width
+            Width applied to both data lines and axis spines.
+        palette
+            A :class:`~capable_plots.color.Palette` or list of colors for the axes
+            color cycle.
+        rc
+            Raw rcParams overrides, applied last — an escape hatch for anything the
+            named knobs above don't cover.
+
+        Usage::
+
+            light = cap.house.customize(background="white", font="Helvetica")
+            with light:
+                ...
+        """
+        new_rc = dict(self.rc)
+        transparent = self.transparent
+
+        if background is not None:
+            if str(background).lower() in ("transparent", "none", "clear"):
+                new_rc.update({"figure.facecolor": "none", "axes.facecolor": "none",
+                               "savefig.facecolor": "none"})
+                transparent = True
+            else:
+                new_rc.update({"figure.facecolor": background, "axes.facecolor": background,
+                               "savefig.facecolor": background})
+                transparent = False
+
+        if font is not None:
+            families = [font] if isinstance(font, str) else list(font)
+            if "DejaVu Sans" not in families:
+                families = families + ["DejaVu Sans"]
+            new_rc["font.family"] = families
+
+        if font_size is not None:
+            new_rc["font.size"] = font_size
+
+        if line_width is not None:
+            new_rc["lines.linewidth"] = line_width
+            new_rc["axes.linewidth"] = line_width
+
+        if palette is not None:
+            cycle = palette.as_list() if hasattr(palette, "as_list") else list(palette)
+            new_rc["axes.prop_cycle"] = mpl.cycler(color=cycle)
+
+        if rc:
+            new_rc.update(rc)
+
+        return Theme(name=name or f"{self.name}+custom", rc=new_rc, transparent=transparent)
 
 
 def active() -> Theme | None:

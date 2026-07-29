@@ -26,6 +26,42 @@ def test_editable_text_settings():
         assert matplotlib.rcParams["pdf.fonttype"] == 42
 
 
+def test_customize_returns_new_theme_without_mutating_default():
+    light = cap.house.customize(background="white", font="Helvetica",
+                                font_size=9, line_width=0.8)
+    # default is untouched
+    assert cap.house.transparent is True
+    assert cap.house.rc["figure.facecolor"] == "none"
+    # derived theme reflects the overrides
+    assert light.transparent is False
+    assert light.rc["figure.facecolor"] == "white"
+    assert light.rc["axes.facecolor"] == "white"
+    assert light.rc["font.family"] == ["Helvetica", "DejaVu Sans"]
+    assert light.rc["font.size"] == 9
+    assert light.rc["lines.linewidth"] == 0.8
+    assert light.rc["axes.linewidth"] == 0.8
+
+
+def test_customize_transparent_keyword_and_palette_and_rc_escape_hatch():
+    t = cap.house.customize(
+        background="transparent",
+        palette=cap.colors("colorblind"),
+        rc={"figure.dpi": 222},
+    )
+    assert t.transparent is True
+    assert t.rc["figure.facecolor"] == "none"
+    assert t.rc["figure.dpi"] == 222  # raw escape hatch honored
+    cycle_colors = t.rc["axes.prop_cycle"].by_key()["color"]
+    assert cycle_colors == cap.colors("colorblind").as_list()
+
+
+def test_customized_theme_applies_as_context_manager():
+    light = cap.house.customize(background="white", font_size=9)
+    with light:
+        assert matplotlib.rcParams["font.size"] == 9
+        assert cap.active() is light
+
+
 def test_style_axis_removes_top_right_spines():
     fig, ax = plt.subplots()
     ax.plot([1, 2, 3], [1, 2, 3])

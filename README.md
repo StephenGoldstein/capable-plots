@@ -39,6 +39,26 @@ One theme by design — simplicity first; more can be added later as additional
 (`cap.house.apply()`), or just pull sizes/colors (`cap.figsize(...)`,
 `cap.colors(...)`, `cap.CAPABLE`).
 
+### Customizing
+
+`house` is the default; derive a tweaked theme with `customize()` — it returns a
+**new** theme and never mutates `house`:
+
+```python
+light = cap.house.customize(
+    background="white",        # "transparent"/"none", or any color ("white", "#fff")
+    font="Helvetica",          # a name or fallback list; DejaVu Sans appended as backup
+    font_size=10,
+    line_width=1.0,
+    palette=cap.colors("colorblind"),
+    rc={"figure.dpi": 200},    # escape hatch: any raw rcParams
+)
+with light:
+    ...
+```
+
+Every knob is optional — omit one to inherit `house`'s value.
+
 ## Assay curve math
 
 ```python

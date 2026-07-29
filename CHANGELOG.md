@@ -18,3 +18,6 @@ Initial release.
 - `fit_4pl` accepts optional per-parameter bound overrides (`bottom_bounds`,
   `top_bounds`, `logEC50_bounds`) alongside `hill_bounds`, so a single fitter can be
   tuned per assay modality instead of forking the function. Defaults unchanged.
+- `Theme.customize(...)` derives a new theme from `house` with semantic knobs
+  (`background`, `font`, `font_size`, `line_width`, `palette`) plus a raw-`rc` escape
+  hatch. Returns a new theme; the default `house` is never mutated.
