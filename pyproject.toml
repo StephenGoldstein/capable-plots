@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "capable-plots"
-version = "0.1.0"
-description = "Capable Labs house style for matplotlib/seaborn figures, plus shared assay curve math."
+version = "0.2.0"
+description = "Capable Labs house style for matplotlib/seaborn/plotly figures, plus shared assay curve math."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Capable Labs" }]
-keywords = ["matplotlib", "plotting", "house-style", "dose-response", "4PL"]
+keywords = ["matplotlib", "plotly", "plotting", "house-style", "dose-response", "4PL"]
 dependencies = [
     "matplotlib>=3.7",
     "numpy>=1.24",
@@ -19,6 +19,7 @@ dependencies = [
 
 [project.optional-dependencies]
 seaborn = ["seaborn>=0.13"]
+plotly = ["plotly>=5.20", "kaleido>=0.2"]
 dev = ["pytest>=7", "ruff>=0.4"]
 
 [project.urls]

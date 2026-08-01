@@ -3,6 +3,22 @@
 All notable changes to `capable-plots` are documented here. This project follows
 [semantic versioning](https://semver.org/).
 
+## [0.2.0] — unreleased
+
+### Added
+- Plotly parity via `capable_plots.plotly`: registers a plotly `Template`
+  named `"capable_house"`, exposed as `cap.plotly_house`. Same palette,
+  Times New Roman font, transparent backgrounds, hidden top/right axis lines,
+  no grid, ink-black axes as the matplotlib `house` theme.
+- `cap.plotly_house_ctx()` context manager sets and restores
+  `plotly.io.templates.default`, mirroring `with cap.house:` for matplotlib.
+- `cap.plotly_save(fig, name)` writes PNG + SVG via the kaleido backend,
+  mirroring `cap.save` for matplotlib.
+- `cap.plotly_figsize(name)` returns pixel dimensions matching the matplotlib
+  `figsize` inch presets (12in × 7in `house-slide`, 5in × 5in `square`).
+- New optional dependency extra: `pip install 'capable-plots[plotly]'`
+  (installs `plotly>=5.20` + `kaleido>=0.2`).
+
 ## [0.1.0] — unreleased
 
 Initial release.
