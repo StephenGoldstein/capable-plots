@@ -71,9 +71,3 @@ plots.dose_response(ax, x, y, fit)                    # log axis + EC50/Emax ann
 
 One canonical 4PL fitter for every modality. Whether the signal rises or falls
 with dose is a single explicit `direction=` argument — not three diverging copies.
-
-## Scope / leak-safe boundary
-
-This package holds only universal styling and generic science (textbook 4PL,
-standard figure grammar). Program-specific details — targets, control handling,
-the results tracker — live in the consuming workspace, which calls this package.
