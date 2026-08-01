@@ -1,21 +1,22 @@
 # capable-plots
 
-Capable Labs' house style for matplotlib/seaborn figures, plus the shared
-dose-response curve math used across our functional assays.
+Capable Labs' house style for matplotlib/seaborn/plotly figures, plus the
+shared dose-response curve math used across our functional assays.
 
-It is a **styling** library: you draw with normal matplotlib/seaborn, and
-`capable-plots` makes it look right and saves it correctly. It is *not* a
-plotting wrapper — the only drawing helpers are the handful of figures we make
-constantly (dose-response, group box + strip).
+It is a **styling** library: you draw with normal matplotlib/seaborn or
+plotly, and `capable-plots` makes it look right and saves it correctly. It is
+*not* a plotting wrapper — the only drawing helpers are the handful of figures
+we make constantly (dose-response, group box + strip).
 
 ## Install
 
 ```bash
 pip install -e .            # from a clone, for development
 pip install -e '.[seaborn]' # if you use group_box
+pip install -e '.[plotly]'  # if you draw with plotly
 ```
 
-## Quick start
+## Quick start (matplotlib)
 
 ```python
 import matplotlib.pyplot as plt
@@ -28,16 +29,40 @@ with cap.house:
 cap.save(fig, "figure1")                            # 300dpi PNG + editable SVG
 ```
 
+## Quick start (plotly)
+
+```python
+import plotly.express as px
+import capable_plots as cap
+
+fig = px.scatter(df, x="dose", y="response", template=cap.plotly_house)
+fig.update_layout(**cap.plotly_figsize("house-slide"))
+cap.plotly_save(fig, "figure1")                     # PNG + SVG via kaleido
+```
+
+Set as the plotly default globally or scope it:
+
+```python
+import plotly.io as pio
+pio.templates.default = cap.plotly_house            # global
+
+with cap.plotly_house_ctx():                        # scoped, auto-restored
+    ...
+```
+
 ## Theme
 
-| Theme       | Look                                           | Source style guide  |
-|-------------|------------------------------------------------|---------------------|
-| `cap.house` | pitch-deck: serif, transparent bg, thick lines | Capable house style |
+| Theme              | Draws with        | Look                                           | Source style guide  |
+|--------------------|-------------------|------------------------------------------------|---------------------|
+| `cap.house`        | matplotlib/seaborn| pitch-deck: serif, transparent bg, thick lines | Capable house style |
+| `cap.plotly_house` | plotly            | same, as a plotly `Template`                   | Capable house style |
 
 One theme by design — simplicity first; more can be added later as additional
-`Theme` instances. Use as a context manager (`with cap.house:`), globally
-(`cap.house.apply()`), or just pull sizes/colors (`cap.figsize(...)`,
-`cap.colors(...)`, `cap.CAPABLE`).
+`Theme` / template instances. For matplotlib use as a context manager
+(`with cap.house:`), globally (`cap.house.apply()`), or just pull sizes/colors
+(`cap.figsize(...)`, `cap.colors(...)`, `cap.CAPABLE`). For plotly, pass
+`template=cap.plotly_house` per figure, set `pio.templates.default`, or use
+`with cap.plotly_house_ctx():`.
 
 ### Customizing
 
