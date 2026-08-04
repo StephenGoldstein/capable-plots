@@ -23,8 +23,8 @@ plotly = ["plotly>=5.20", "kaleido>=0.2"]
 dev = ["pytest>=7", "ruff>=0.4"]
 
 [project.urls]
-Homepage = "https://github.com/Capable-Labs/capable-plots"
-Source = "https://github.com/Capable-Labs/capable-plots"
+Homepage = "https://github.com/hypercapable/capable-plots"
+Source = "https://github.com/hypercapable/capable-plots"
 
 [tool.setuptools.packages.find]
 where = ["src"]
