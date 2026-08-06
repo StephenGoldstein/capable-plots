@@ -89,6 +89,14 @@ def test_figsize_and_palette_lookup():
     assert cap.colors("capable_pair").as_list() == [cap.PLACEBO, cap.CAPABLE]
 
 
+def test_vibrant_palette_family_is_parallel():
+    # Same length and order across base/light/dark — index i is one hue's triad.
+    assert len(cap.VIBRANT) == len(cap.VIBRANT_LIGHT) == len(cap.VIBRANT_DARK) == 9
+    assert cap.colors("vibrant").as_list() == cap.VIBRANT.as_list()
+    assert cap.colors("vibrant_light").as_list() == cap.VIBRANT_LIGHT.as_list()
+    assert cap.colors("vibrant_dark").as_list() == cap.VIBRANT_DARK.as_list()
+
+
 def test_svg_export_has_editable_text(tmp_path):
     with cap.house:
         fig, ax = plt.subplots()
