@@ -80,11 +80,41 @@ COLORBLIND = Palette(
 # Sequential gradient anchored on the brand blue.
 CAPABLE_SEQ = Gradient("capable_seq", ("#f2f5f7", CAPABLE, "#2f5566"))
 
-_PALETTES = {p.name: p for p in (CAPABLE_PAIR, COLORBLIND)}
+# VIBRANT: an expanded, energetic qualitative palette for pitch decks and other
+# high-contrast/marketing contexts where CAPABLE/PLACEBO read as too muted.
+# 9 jewel-tone hues spanning the wheel, each with a LIGHT (background-safe) tint
+# and a DARK (text-safe on white, ~7:1+ contrast) shade — the base hues alone
+# are vivid brand accents, not body-text-safe at small sizes on white
+# (CAPABLE/PLACEBO have the same limitation, at ~2.6:1 / ~1.8:1). Parallel
+# order/length across all three: index i is the same hue's tint/base/shade.
+VIBRANT = Palette("vibrant", (
+    "#12B5A6",  # teal
+    "#2D7DD2",  # sky
+    "#7C5CFC",  # violet
+    "#A64AC9",  # plum
+    "#D6336C",  # magenta
+    "#F0563D",  # coral
+    "#F2A93B",  # gold
+    "#A0B932",  # chartreuse
+    "#2FA84F",  # emerald
+))
+
+VIBRANT_LIGHT = Palette("vibrant_light", (
+    "#D5F6F3", "#D5E5F6", "#DCD5F6", "#ECD8F3", "#F6D5E1",
+    "#F6DAD5", "#F6E9D5", "#EFF4D7", "#D7F4DF",
+))
+
+VIBRANT_DARK = Palette("vibrant_dark", (
+    "#1F7A71", "#294B70", "#2D1782", "#5A2F6A", "#712841",
+    "#7C2B1D", "#7D561C", "#606C2D", "#2E6B3E",
+))
+
+_PALETTES = {p.name: p for p in (CAPABLE_PAIR, COLORBLIND, VIBRANT, VIBRANT_LIGHT, VIBRANT_DARK)}
 
 
 def colors(name: str = "colorblind") -> Palette:
-    """Look up a named palette (``"capable_pair"`` or ``"colorblind"``)."""
+    """Look up a named palette (``"capable_pair"``, ``"colorblind"``, ``"vibrant"``,
+    ``"vibrant_light"``, or ``"vibrant_dark"``)."""
     try:
         return _PALETTES[name]
     except KeyError:

@@ -82,6 +82,11 @@ with light:
     ...
 ```
 
+Available palettes: `"capable_pair"` (brand placebo/treatment), `"colorblind"` (Okabe-Ito, 8-color),
+and `"vibrant"` — a 9-hue energetic qualitative set for pitch decks/marketing contexts where
+`CAPABLE`/`PLACEBO` read as too muted, with parallel `"vibrant_light"` (background tints) and
+`"vibrant_dark"` (text-safe shades) variants at the same index per hue.
+
 Every knob is optional — omit one to inherit `house`'s value.
 
 ## Assay curve math
